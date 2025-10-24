@@ -45,7 +45,7 @@ export class AuthService {
       data: { email, password: hashed, name },
     });
 
-    await this.sendEmailVerification(user.id, user.email);
+    // await this.sendEmailVerification(user.id, user.email);
     return this.generateToken(user, rememberMe);
   }
 
@@ -163,6 +163,9 @@ export class AuthService {
   }
 
   async getUserById(id: string) {
+    if(!id){
+      throw new BadRequestException("userId is missing")
+    }
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -179,5 +182,11 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  async getUsers() {
+    const users = await this.prisma.user.findMany();
+
+    return users;
   }
 }
